@@ -1,9 +1,15 @@
 const { Pool } = require('pg')
+const cors = require('cors')
 const express = require('express')
 
 require('dotenv').config()
 
 const app = express();
+app.use(cors({
+  origin: '*',
+  methods: "GET,POST,PUT,DELETE"
+}))
+
 const pool = new Pool({
   connectionString: process.env.PGURL
 })
