@@ -5,16 +5,33 @@ const express = require('express')
 require('dotenv').config()
 
 const app = express();
-app.use(cors({
-  origin: '*',
-  methods: "GET,POST,PUT,DELETE"
-}))
+const PORT = process.env.PORT || 3333
+
 
 const pool = new Pool({
   connectionString: process.env.PGURL
 })
 
+
+app.use(cors())
 app.use(express.json())
+
+app.get('/', async (req, res) => {
+  try {
+    return res.status(200).send({
+      routes: {
+        get: ['/usuarios', 'usuarios/{id}'],
+        post: ['/usuarios'],
+        put: ['usuarios/{id}'],
+        delete: ['usuarios/{id}']
+      }
+    })
+  } 
+  
+  catch (error) {
+    return res.status(400).send({error: true, message: error})
+  }
+})
 
 app.get('/usuarios', async (req, res) => {
   try {
@@ -90,4 +107,4 @@ app.delete('/usuarios/:id', async (req, res) =>  {
   }
 })
 
-app.listen(3333, () => {console.log('Server starting in http://localhost:3333/')})
+app.listen(PORT, () => {console.log(`Server starting in ${PORT}`)})
